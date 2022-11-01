@@ -1,0 +1,13 @@
+{
+    "ES": {
+        "IP": "http://localhost:9200",
+        "INDEX_RECOMANDARI": "index_recomandari",
+        "INDEX_GSM": "index_scan_beta_2g",
+        "INDEX_UMTS": "index_scan_beta_3g",
+        "INDEX_LTE": "index_scan_beta_4g",
+        "INDEX_ALL_SCAN": "index_scan_beta*"
+    },
+    "errorLogFile": "Logs/errorLog.txt",
+    "logFile": "Logs/log.txt",
+    "EXPRESS_PORT": 5000
+}

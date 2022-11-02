@@ -1,5 +1,6 @@
 # Logs
 logs/*.txt
+logs/audit/*
 *.log
 npm-debug.log*
 yarn-debug.log*

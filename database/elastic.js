@@ -71,18 +71,18 @@ const deleteKeyElastic = async (key, keyVal, index_dest) => {
     try {
         let query = {
             "query": {
-              "bool": {
-                "must": [
-                  {
-                    "match": {
-                      [key]: keyVal
-                    }
-                  }
-                ]
-              }
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                [key]: keyVal
+                            }
+                        }
+                    ]
+                }
             }
-          }
-        let response = await deleteElastic(query, index_dest)
+        }
+        let response = await searchElastic(query, index_dest)
         return response;
     } catch (error) {
         console.log(error)
@@ -91,3 +91,44 @@ const deleteKeyElastic = async (key, keyVal, index_dest) => {
 
 }
 module.exports.deleteKeyElastic = deleteKeyElastic;
+
+const deleteCatchData = async (mission, session) => {
+    try {
+        let queryDeleteCatch = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "mission_id.keyword": mission
+                            }
+                        }
+                    ]
+                }
+            },
+            "size": 10000
+        }
+        if (session) {
+            queryDeleteCatch.query.bool.must[1] = {
+                "match": {
+                    "session_id.keyword": session
+                }
+            };
+        }
+        let searchCatch = await searchElastic(queryDeleteCatch, ES.INDEX_ALL_CATCH);
+
+        let responseInsertBackup = await Promise.all(searchCatch.hits.hits.map(async (catchEl) => {
+            let toInsert = {
+                ...catchEl._source,
+                indexElastic: catchEl._index
+            }
+            return await insertElastic(ES.INDEX_BACKUP_CATCH, toInsert);
+        }));
+        // let responseDeleteCatch = await deleteElastic(queryDeleteCatch, ES.INDEX_ALL_CATCH);
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+module.exports.deleteCatchData = deleteCatchData;

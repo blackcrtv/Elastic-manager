@@ -1,6 +1,6 @@
 const { deleteKeyElastic, deleteCatchData } = require("../../database/elastic");
 const { ES, errorLogFile, auditFile } = require('../../conf.json');
-const { insertLog } = require('../../Logs/formatLogs');
+const { insertLog } = require('../../Logs/Script/formatLogs');
 
 const deleteMission = async (req, res, next) => {
     const mission = req.params.mission;
@@ -17,7 +17,12 @@ const deleteMission = async (req, res, next) => {
         let responseDeleteMission = await deleteKeyElastic("misiune.keyword", mission, ES.INDEX_MISIUNI);
         let responseDeleteSession = await deleteKeyElastic("misiune_apartinatoare.keyword", mission, ES.INDEX_SESIUNI);
         let responseDeleteCatch = await deleteCatchData(mission);
-        // insertLog(messageAudit, auditFile);
+        
+        if(responseDeleteCatch.err){
+           insertLog(responseDeleteCatch, errorLogFile);         
+        }else{
+            insertLog(messageAudit, auditFile);
+        }
         res.json({
             responseDeleteMission,
             responseDeleteSession
@@ -31,6 +36,43 @@ const deleteMission = async (req, res, next) => {
 
 }
 
+const deleteSession = async (req, res, next) => {
+    const mission = req.params.mission;
+    const session = req.params.session;
+
+    let { user, role, token } = req.body;
+    let messageAudit = `${user} deleted session ${session} from ${mission};`;
+    try {
+        if (!mission || !session) {
+            throw {
+                error: true,
+                msg: 'Mission/session param cant be null!',
+                errorStatus: 4
+            }
+        }
+        let responseDeleteSession = await deleteKeyElastic("sesiune.keyword", session, ES.INDEX_SESIUNI);
+        let responseDeleteCatch = await deleteCatchData(mission, session);
+        
+        if(responseDeleteCatch.err){
+           insertLog(responseDeleteCatch, errorLogFile);         
+        }else{
+            insertLog(messageAudit, auditFile);
+        }
+        res.json({
+            responseDeleteSession
+        });
+    } catch (error) {
+        insertLog(error, errorLogFile);
+        res.json({
+            "error": "Error deleteMission: " + error.msg ?? error
+        });
+    }
+
+}
+
+
+
 module.exports = {
-    deleteMission
+    deleteMission,
+    deleteSession
 }

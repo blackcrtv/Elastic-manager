@@ -124,11 +124,25 @@ const deleteCatchData = async (mission, session) => {
             }
             return await insertElastic(ES.INDEX_BACKUP_CATCH, toInsert);
         }));
-        // let responseDeleteCatch = await deleteElastic(queryDeleteCatch, ES.INDEX_ALL_CATCH);
-        return true;
+        if(responseInsertBackup.some(el => el.err === true)){
+            return {
+                err: true,
+                msg: "Eroare in inserare backup",
+                errData: responseInsertBackup.filter(el => el.err === true)
+            };
+        }
+        let responseDeleteCatch = await deleteElastic(queryDeleteCatch, ES.INDEX_ALL_CATCH);
+        return {
+            err: false,
+            msg: "all good",
+            responseDeleteCatch
+        };
     } catch (error) {
-        console.log(error);
-        return false;
+        console.error(error);
+        return {
+            err: true,
+            msg: error
+        };
     }
 }
 module.exports.deleteCatchData = deleteCatchData;

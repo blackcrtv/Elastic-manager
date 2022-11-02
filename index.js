@@ -1,6 +1,7 @@
-const { insertLog } = require('./Logs/formatLogs');
+const { insertLog } = require('./Logs/Script/formatLogs');
 const bodyParser = require('body-parser');
 const deleteRoute = require('./server/routes/delete-route');
+const transferMissionRoute = require('./server/routes/mission-transfer-route');
 const { errorLogFile, logFile, EXPRESS_PORT } = require('./conf.json');
 
 const express = require('express')
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/delete', deleteRoute);
+app.use('/api/mission-transfer', transferMissionRoute);
 
 app.use((error, req, res, next) => {
     if (res.headerSent) {

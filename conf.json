@@ -13,5 +13,5 @@
     "errorLogFile": "Logs/errorLog.txt",
     "logFile": "Logs/log.txt",
     "auditFile": "Logs/Audit/audit-.txt",
-    "EXPRESS_PORT": 5000
+    "EXPRESS_PORT": 5003
 }

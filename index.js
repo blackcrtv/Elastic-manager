@@ -1,6 +1,7 @@
 const { insertLog } = require('./Logs/Script/formatLogs');
 const bodyParser = require('body-parser');
 const deleteRoute = require('./server/routes/delete-route');
+const insertRoute = require('./server/routes/insert-route');
 const transferMissionRoute = require('./server/routes/mission-transfer-route');
 const { errorLogFile, logFile, EXPRESS_PORT } = require('./conf.json');
 
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/delete', deleteRoute);
+app.use('/api/insert', insertRoute);
 app.use('/api/mission-transfer', transferMissionRoute);
 
 app.use((error, req, res, next) => {

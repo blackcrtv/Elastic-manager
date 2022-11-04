@@ -13,5 +13,8 @@
     "errorLogFile": "Logs/errorLog.txt",
     "logFile": "Logs/log.txt",
     "auditFile": "Logs/Audit/audit-.txt",
-    "EXPRESS_PORT": 5003
+    "EXPRESS_PORT": 5003,
+    "WIN_SERVICE_NAME": "Elastic Manager",
+    "WIN_SERVICE_DESCRIPTION": "Serviciu de management al misiunilor si sesiunilor din elasticsearch",
+    "WIN_SERVICE_SCRIPT": "./index.js"
 }

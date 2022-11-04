@@ -12,7 +12,8 @@ const getCurrentTime = () => {
     return {
         dateShort: year + "-" + month + "-" + date,
         dateLong: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
-        time: hours + ":" + minutes + ":" + seconds
+        time: hours + ":" + minutes + ":" + seconds,
+        elasticFormat: year + "" + month + "" + date + "T" + hours + "" + minutes + "" + seconds + ".000Z"
     }
 }
 
@@ -30,5 +31,6 @@ const insertLog = (message, file) => {
 }
 
 module.exports = {
-    insertLog
+    insertLog,
+    getCurrentTime
 }

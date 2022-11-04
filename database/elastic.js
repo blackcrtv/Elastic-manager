@@ -38,7 +38,10 @@ const searchElastic = async (search, index_dest) => {
         return body;
     } catch (error) {
         console.log(error)
-        return null;
+        return {
+            search,
+            err: true
+        };
     }
 
 }
@@ -54,43 +57,65 @@ const deleteElastic = async (query, index_dest) => {
         return body;
     } catch (error) {
         console.log(error)
-        return null;
+        return {
+            err: true,
+            error,
+            query
+        }
     }
 
 }
 module.exports.deleteElastic = deleteElastic;
 
 /**
- * Steregere elemente in functie de cheia aleasa din elasticsearch
+ * Cautare/stergere elemente in functie de cheia aleasa din elasticsearch
  * @param {string} key elasticsearch field to search for
- * @param {string} keyVal key value to match delete query
+ * @param {string} keyVal key value to match search query
  * @param {string} index_dest 
  * @returns elasticsearch response
  */
-const deleteKeyElastic = async (key, keyVal, index_dest) => {
+const actionKeyElastic = async (key, keyVal, index_dest, option = 'search') => {
     try {
         let query = {
             "query": {
-                "bool": {
-                    "must": [
-                        {
-                            "match": {
-                                [key]: keyVal
-                            }
-                        }
-                    ]
-                }
-            }
+                "match_all": {}
+            },
+            "size": 10000
         }
-        let response = await searchElastic(query, index_dest)
-        return response;
+        if (key && keyVal)
+            query = {
+                "query": {
+                    "bool": {
+                        "must": [
+                            {
+                                "match": {
+                                    [key]: keyVal
+                                }
+                            }
+                        ]
+                    }
+                },
+                "size": 10000
+            }
+        
+        switch (option) {
+            case "delete":
+                return await deleteElastic(query, index_dest);
+            default:
+                return await searchElastic(query, index_dest);
+        }
     } catch (error) {
-        console.log(error)
-        return null;
+        // console.error(error)
+        return {
+            error,
+            query,
+            err: true
+        };
     }
 
 }
-module.exports.deleteKeyElastic = deleteKeyElastic;
+module.exports.actionKeyElastic = actionKeyElastic;
+
 
 const deleteCatchData = async (mission, session) => {
     try {
@@ -124,7 +149,7 @@ const deleteCatchData = async (mission, session) => {
             }
             return await insertElastic(ES.INDEX_BACKUP_CATCH, toInsert);
         }));
-        if(responseInsertBackup.some(el => el.err === true)){
+        if (responseInsertBackup.some(el => el.err === true)) {
             return {
                 err: true,
                 msg: "Eroare in inserare backup",
@@ -139,10 +164,7 @@ const deleteCatchData = async (mission, session) => {
         };
     } catch (error) {
         console.error(error);
-        return {
-            err: true,
-            msg: error
-        };
+        throw new Error('Eroare delete catch');
     }
 }
 module.exports.deleteCatchData = deleteCatchData;

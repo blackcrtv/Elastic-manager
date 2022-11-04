@@ -1,95 +1,95 @@
 [
-    {
-        "hits_catch":[
-            {
-                "_index" : "index_backup_catch",
-                "_type" : "_doc",
-                "_id" : "v4VEOIQBa48QGvR5RhOG",
-                "_score" : 1.0,
-                "_source" : {
-                  "message_type" : 220,
-                  "cmd_id" : 12781,
-                  "timestamp" : "2022-01-19T16:00:14.048Z",
-                  "session_id" : "as",
-                  "mission_id" : "magnolia",
-                  "ipSDR" : "172.17.120.243",
-                  "port" : "PRIMARY",
-                  "titlu_placuta" : "BTS 12",
-                  "system_info" : {
-                    "imei_str" : "358129068475727",
-                    "imsi_str" : "226014030287738",
-                    "tmsi" : "9c08018b",
-                    "list_type" : 0,
-                    "rssi_dB" : -87,
-                    "snr_dB" : 19,
-                    "timing_advance" : 0
-                  },
-                  "modelTelefon" : "VeriFone VX520 and VX680",
-                  "tara" : "Romania",
-                  "operator" : "Vodafone(1)",
-                  "imeiLocatie" : [ ],
-                  "imsiLocatie" : [ ],
-                  "perecheImeiImsiLocatie" : [ ],
-                  "blacklistImei" : "",
-                  "blacklistImsi" : "",
-                  "blacklistPereche" : "",
-                  "schimbariSIM" : [ ],
-                  "indexElastic" : "index_catch_2g"
-                }
-              }
-        ]
-    },
-    {
-        "hits_misiuni":[
-            {
-                "_index" : "index_misiuni_thor",
-                "_type" : "_doc",
-                "_id" : "_B0-O3kBB3IAE2VaK64C",
-                "_score" : 1.0,
-                "_source" : {
-                  "mission_id" : 2,
-                  "misiune" : "plaurul",
-                  "tip" : "secret",
-                  "locatie" : "Floreasca",
-                  "data_creare" : "20210505T010101.000Z",
-                  "data_update" : "20210505T010101.000Z"
-                }
-              }
-        ]
-    },
-    {
-        "hits_sesiuni":[
-            {
-                "_index" : "index_sesiuni_thor",
-                "_type" : "_doc",
-                "_id" : "_R0_O3kBB3IAE2Va_66i",
-                "_score" : 1.0,
-                "_source" : {
-                  "session_id" : 1,
-                  "sesiune" : "as",
-                  "misiune_apartinatoare" : "magnolia",
-                  "data_creare" : "20210505T010101.000Z",
-                  "data_update" : "20210505T010101.000Z"
-                }
-              }
-        ]
-    },
-    {
-        "hits_export":[
-            {
-                "_index" : "index_export_misiuni",
-                "_type" : "_doc",
-                "_id" : "79bsp3wBrjJ7lh2WA00w",
-                "_score" : 1.0,
-                "_source" : {
-                  "actiune" : "export",
-                  "misiune" : "magnolia",
-                  "status" : "Finished",
-                  "date_start" : "2021-10-22 15:13:54",
-                  "date_stop" : "2021-10-22 15:13:55",
-                  "ip" : "172.17.115.65"
-                }
-              } 
-        ]
-    }
+  {
+    "hits_catch": [
+      {
+        "_index": "index_backup_catch",
+        "_type": "_doc",
+        "_id": "v4VEOIQBa48QGvR5RhOG",
+        "_score": 1.0,
+        "_source": {
+          "message_type": 220,
+          "cmd_id": 12781,
+          "timestamp": "2022-01-19T16:00:14.048Z",
+          "session_id": "as",
+          "mission_id": "magnolia",
+          "ipSDR": "172.17.120.243",
+          "port": "PRIMARY",
+          "titlu_placuta": "BTS 12",
+          "system_info": {
+            "imei_str": "358129068475727",
+            "imsi_str": "226014030287738",
+            "tmsi": "9c08018b",
+            "list_type": 0,
+            "rssi_dB": -87,
+            "snr_dB": 19,
+            "timing_advance": 0
+          },
+          "modelTelefon": "VeriFone VX520 and VX680",
+          "tara": "Romania",
+          "operator": "Vodafone(1)",
+          "imeiLocatie": [],
+          "imsiLocatie": [],
+          "perecheImeiImsiLocatie": [],
+          "blacklistImei": "",
+          "blacklistImsi": "",
+          "blacklistPereche": "",
+          "schimbariSIM": [],
+          "indexElastic": "index_catch_2g"
+        }
+      }
+    ]
+  },
+  {
+    "hits_misiuni": [
+      {
+        "_index": "index_misiuni_thor",
+        "_type": "_doc",
+        "_id": "_B0-O3kBB3IAE2VaK64C",
+        "_score": 1.0,
+        "_source": {
+          "mission_id": 2,
+          "misiune": "plaurul",
+          "tip": "secret",
+          "locatie": "Floreasca",
+          "data_creare": "20210505T010101.000Z",
+          "data_update": "20210505T010101.000Z"
+        }
+      }
+    ]
+  },
+  {
+    "hits_sesiuni": [
+      {
+        "_index": "index_sesiuni_thor",
+        "_type": "_doc",
+        "_id": "_R0_O3kBB3IAE2Va_66i",
+        "_score": 1.0,
+        "_source": {
+          "session_id": 1,
+          "sesiune": "as",
+          "misiune_apartinatoare": "magnolia",
+          "data_creare": "20210505T010101.000Z",
+          "data_update": "20210505T010101.000Z"
+        }
+      }
+    ]
+  },
+  {
+    "hits_export": [
+      {
+        "_index": "index_export_misiuni",
+        "_type": "_doc",
+        "_id": "79bsp3wBrjJ7lh2WA00w",
+        "_score": 1.0,
+        "_source": {
+          "actiune": "export",
+          "misiune": "magnolia",
+          "status": "Finished",
+          "date_start": "2021-10-22 15:13:54",
+          "date_stop": "2021-10-22 15:13:55",
+          "ip": "172.17.115.65"
+        }
+      }
+    ]
+  }
 ]

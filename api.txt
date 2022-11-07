@@ -1,0 +1,21 @@
+POST: http://localhost:5003/api/insert/insert-mission/<postman3> --insert a mission
+    BODY:{
+        "user": "lucian",
+        "tip": "secret",
+        "locatie": "ita"
+    }
+GET: http://localhost:5003/api/select/mission --get all missions
+GET: http://localhost:5003/api/select/session/<postman3> --get all sessions from a mission
+DELETE: http://localhost:5003/api/delete/delete-mission/<postman2> --delete mission from
+    BODY:{
+            "user": "postman"
+        }
+POST: http://localhost:5003/api/insert/insert-session/<postman3>/<test3> --insert session to a specific mission
+        BODY:{
+            "user": "postman"
+        }
+DELETE: http://localhost:5003/api/delete/delete-session/<postman3>/<test3> --delete session from a mission
+    BODY:{
+        "user": "postman"
+    }   
+--delete mission or session will delete all catch data from them--

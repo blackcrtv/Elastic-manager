@@ -10,6 +10,11 @@
         "INDEX_SESIUNI": "index_sesiuni_thor",
         "INDEX_BACKUP_CATCH": "index_backup_catch"
     },
+    "SQLITE":{
+        "DIRECTOR_EXPORT": "Export",
+        "DIRECTOR_IMPORT": "Import",
+        "DIRECTOR_DISPECERAT": "Dispecerat"
+    },
     "errorLogFile": "Logs/errorLog.txt",
     "logFile": "Logs/log.txt",
     "auditFile": "Logs/Audit/audit-.txt",

@@ -116,6 +116,61 @@ const actionKeyElastic = async (key, keyVal, index_dest, option = 'search') => {
 }
 module.exports.actionKeyElastic = actionKeyElastic;
 
+const searchMultipleKeyElastic = async (keyValArr = [], index_dest, option = 'search', boolOption = 'must') => {
+    try {
+        let query = {
+            "query": {
+                "match_all": {}
+            },
+            "size": 10000
+        }
+        if (keyValArr.length)
+            query = {
+                "query": {
+                    "bool": {
+                        [boolOption]: [
+                            keyValArr.map(elem=>{
+                                return {
+                                    [elem.method]:{
+                                        [elem.key]: elem.value
+                                    }
+                                }
+                            })
+                        ]
+                    }
+                },
+                "size": 10000
+            }
+        
+        switch (option) {
+            case "delete":
+                return await deleteElastic(query, index_dest);
+            default:
+                return await searchElastic(query, index_dest);
+        }
+    } catch (error) {
+        // console.error(error)
+        return {
+            error,
+            query,
+            err: true
+        };
+    }
+
+}
+module.exports.searchMultipleKeyElastic = searchMultipleKeyElastic;
+
+const getMappingIndex = async (index)=>{
+    try {
+        const client = new Client7({ node: ES.IP })
+        return await client.indices.getMapping({
+            index
+        })
+    } catch (error) {
+        throw new Error('Eroare obtinere mapare')
+    }
+}
+module.exports.getMappingIndex = getMappingIndex;
 
 const deleteCatchData = async (mission, session) => {
     try {

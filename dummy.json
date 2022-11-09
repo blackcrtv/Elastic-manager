@@ -1,95 +1,736 @@
-[
-  {
-    "hits_catch": [
+{
+  "indexesProperties": [
       {
-        "_index": "index_backup_catch",
-        "_type": "_doc",
-        "_id": "v4VEOIQBa48QGvR5RhOG",
-        "_score": 1.0,
-        "_source": {
-          "message_type": 220,
-          "cmd_id": 12781,
-          "timestamp": "2022-01-19T16:00:14.048Z",
-          "session_id": "as",
-          "mission_id": "magnolia",
-          "ipSDR": "172.17.120.243",
-          "port": "PRIMARY",
-          "titlu_placuta": "BTS 12",
-          "system_info": {
-            "imei_str": "358129068475727",
-            "imsi_str": "226014030287738",
-            "tmsi": "9c08018b",
-            "list_type": 0,
-            "rssi_dB": -87,
-            "snr_dB": 19,
-            "timing_advance": 0
-          },
-          "modelTelefon": "VeriFone VX520 and VX680",
-          "tara": "Romania",
-          "operator": "Vodafone(1)",
-          "imeiLocatie": [],
-          "imsiLocatie": [],
-          "perecheImeiImsiLocatie": [],
-          "blacklistImei": "",
-          "blacklistImsi": "",
-          "blacklistPereche": "",
-          "schimbariSIM": [],
-          "indexElastic": "index_catch_2g"
-        }
-      }
-    ]
-  },
-  {
-    "hits_misiuni": [
+          "index": "index_catch_4g",
+          "properties": [
+              {
+                  "blacklistImei": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "blacklistImsi": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "blacklistPereche": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "categorie": {
+                      "type": "long"
+                  }
+              },
+              {
+                  "cmd_id": {
+                      "type": "integer"
+                  }
+              },
+              {
+                  "coordonate": {
+                      "type": "geo_point"
+                  }
+              },
+              {
+                  "geopoint": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "imeiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "imsiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "ipSDR": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "latitudine": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "longitudine": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "message_type": {
+                      "type": "integer"
+                  }
+              },
+              {
+                  "mission_id": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "modelTelefon": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "operator": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "perecheImeiImsiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "port": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "schimbariSIM": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "session_id": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword"
+                          }
+                      }
+                  }
+              },
+              {
+                  "system_info": {
+                      "properties": {
+                          "dl_channelization_code": {
+                              "type": "long"
+                          },
+                          "dummy": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "imei_str": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "imsi_str": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "initial_rtt_val": {
+                              "type": "long"
+                          },
+                          "list_type": {
+                              "type": "integer"
+                          },
+                          "propagation_delay": {
+                              "type": "long"
+                          },
+                          "rssi_dB": {
+                              "type": "long"
+                          },
+                          "snr_dB": {
+                              "type": "long"
+                          },
+                          "timing_advance": {
+                              "type": "long"
+                          },
+                          "tmsi": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "ul_scrambling_code": {
+                              "type": "long"
+                          }
+                      }
+                  }
+              },
+              {
+                  "tara": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "timestamp": {
+                      "type": "date",
+                      "format": "epoch_millis||epoch_second||basic_date_time||date_optional_time"
+                  }
+              },
+              {
+                  "titlu_placuta": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              }
+          ]
+      },
       {
-        "_index": "index_misiuni_thor",
-        "_type": "_doc",
-        "_id": "_B0-O3kBB3IAE2VaK64C",
-        "_score": 1.0,
-        "_source": {
-          "mission_id": 2,
-          "misiune": "plaurul",
-          "tip": "secret",
-          "locatie": "Floreasca",
-          "data_creare": "20210505T010101.000Z",
-          "data_update": "20210505T010101.000Z"
-        }
-      }
-    ]
-  },
-  {
-    "hits_sesiuni": [
+          "index": "index_catch_3g",
+          "properties": [
+              {
+                  "blacklistImei": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "blacklistImsi": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "blacklistPereche": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "cmd_id": {
+                      "type": "integer"
+                  }
+              },
+              {
+                  "coordonate": {
+                      "type": "geo_point"
+                  }
+              },
+              {
+                  "imeiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "imsiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "message_type": {
+                      "type": "integer"
+                  }
+              },
+              {
+                  "mission_id": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "modelTelefon": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "operator": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "perecheImeiImsiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "session_id": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword"
+                          }
+                      }
+                  }
+              },
+              {
+                  "system_info": {
+                      "properties": {
+                          "dl_channelization_code": {
+                              "type": "long"
+                          },
+                          "dummy": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "imei_str": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "imsi_str": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "initial_rtt_val": {
+                              "type": "long"
+                          },
+                          "list_type": {
+                              "type": "integer"
+                          },
+                          "propagation_delay": {
+                              "type": "long"
+                          },
+                          "tmsi": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "ul_scrambling_code": {
+                              "type": "long"
+                          }
+                      }
+                  }
+              },
+              {
+                  "tara": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "timestamp": {
+                      "type": "date",
+                      "format": "epoch_millis||epoch_second||basic_date_time||date_optional_time"
+                  }
+              }
+          ]
+      },
       {
-        "_index": "index_sesiuni_thor",
-        "_type": "_doc",
-        "_id": "_R0_O3kBB3IAE2Va_66i",
-        "_score": 1.0,
-        "_source": {
-          "session_id": 1,
-          "sesiune": "as",
-          "misiune_apartinatoare": "magnolia",
-          "data_creare": "20210505T010101.000Z",
-          "data_update": "20210505T010101.000Z"
-        }
+          "index": "index_catch_2g",
+          "properties": [
+              {
+                  "blacklistImei": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "blacklistImsi": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "blacklistPereche": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "cmd_id": {
+                      "type": "integer"
+                  }
+              },
+              {
+                  "coordonate": {
+                      "type": "geo_point"
+                  }
+              },
+              {
+                  "imeiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "imsiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "indexElastic": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "ipSDR": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "message_type": {
+                      "type": "integer"
+                  }
+              },
+              {
+                  "mission_id": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "modelTelefon": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "operator": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "perecheImeiImsiLocatie": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "port": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "schimbariSIM": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "session_id": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword"
+                          }
+                      }
+                  }
+              },
+              {
+                  "system_info": {
+                      "properties": {
+                          "imei_str": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "imsi_str": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          },
+                          "list_type": {
+                              "type": "integer"
+                          },
+                          "rssi_dB": {
+                              "type": "integer"
+                          },
+                          "snr_dB": {
+                              "type": "integer"
+                          },
+                          "timing_advance": {
+                              "type": "integer"
+                          },
+                          "tmsi": {
+                              "type": "text",
+                              "fields": {
+                                  "keyword": {
+                                      "type": "keyword"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              {
+                  "tara": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              },
+              {
+                  "timestamp": {
+                      "type": "date",
+                      "format": "epoch_millis||epoch_second||basic_date_time||date_optional_time"
+                  }
+              },
+              {
+                  "titlu_placuta": {
+                      "type": "text",
+                      "fields": {
+                          "keyword": {
+                              "type": "keyword",
+                              "ignore_above": 256
+                          }
+                      }
+                  }
+              }
+          ]
       }
-    ]
-  },
-  {
-    "hits_export": [
-      {
-        "_index": "index_export_misiuni",
-        "_type": "_doc",
-        "_id": "79bsp3wBrjJ7lh2WA00w",
-        "_score": 1.0,
-        "_source": {
-          "actiune": "export",
-          "misiune": "magnolia",
-          "status": "Finished",
-          "date_start": "2021-10-22 15:13:54",
-          "date_stop": "2021-10-22 15:13:55",
-          "ip": "172.17.115.65"
-        }
-      }
-    ]
-  }
-]
+  ]
+}

@@ -19,3 +19,8 @@ DELETE: http://localhost:5003/api/delete/delete-session/<postman3>/<test3> --del
         "user": "postman"
     }   
 --delete mission or session will delete all catch data from them--
+
+POST: http://localhost:5003/api/mission-transfer/export-mission/<postman3> --export a mission
+    BODY:{
+        "user": "lucian"
+    }

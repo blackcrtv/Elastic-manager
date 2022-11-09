@@ -1,31 +1,32 @@
 const { searchMultipleKeyElastic, getMappingIndex } = require("../../database/elastic");
 const { ES, errorLogFile, auditFile } = require('../../conf.json');
 const { insertLog } = require('../../Logs/Script/formatLogs');
+let { indexesProperties } = require('../../dummy.json');
 
 const exportMission = async (req, res, next) => {
     const mission = req.params.mission;
     let { user, role, token } = req.body;
     try {
-        let queryCatch = [{
-            method: "match",
-            key: "mission_id",
-            value: mission
-        }]
-        let exportData = await searchMultipleKeyElastic(queryCatch, ES.INDEX_ALL_CATCH);
-        let { body: mappingIndex } = await getMappingIndex(ES.INDEX_ALL_CATCH);
-        let indexesProperties = Object.keys(mappingIndex).map(index =>{
-            return {
-                index,
-                properties: Object.keys(mappingIndex[index].mappings.properties).map(field =>{
-                    return {
-                        [field]: mappingIndex[index].mappings.properties[field]
-                    }
-                })
-            }
-        });
+        // let queryCatch = [{
+        //     method: "match",
+        //     key: "mission_id",
+        //     value: mission
+        // }]
+        // let exportData = await searchMultipleKeyElastic(queryCatch, ES.INDEX_ALL_CATCH);
+        // let { body: mappingIndex } = await getMappingIndex(ES.INDEX_ALL_CATCH);
+        // let indexesProperties = Object.keys(mappingIndex).map(index =>{
+        //     return {
+        //         index,
+        //         properties: Object.keys(mappingIndex[index].mappings.properties).map(field =>{
+        //             return {
+        //                 [field]: mappingIndex[index].mappings.properties[field]
+        //             }
+        //         })
+        //     }
+        // });
         let createTableQuery = createTable(indexesProperties);
         res.json({
-            indexesProperties
+            createTableQuery
         });
     } catch (error) {
         console.error(error)
@@ -60,10 +61,17 @@ const importMission = async (req, res, next) => {
 const createTable = (tablesArray = []) => {
     let query = tablesArray.reduce((previousValue, currentValue) => {
         let separator = '';
-        if(previousValue !== '') separator = '; ';
-        return previousValue + separator + 'CREATE TABLE' + currentValue.index;
+
+        if (previousValue !== '') separator = '; ';
+        return previousValue + separator + 'CREATE TABLE ' + currentValue.index + " (" + getColumns(currentValue.properties) + " )";
     }, '');
     return query
+}
+
+const getColumns = (fields = []) => {
+    return fields.reduce((prev, curr) => {
+        return  prev + " " + Object.keys(curr)[0] + " " + Object.entries(curr)[0][1].type + ", ";
+    }, '').slice(0, -2);
 }
 
 module.exports = {

@@ -6,9 +6,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-local/export/*.sql
-local/import/*.sql
-local/dispecerat/*.sql
+local/export/*.db
+local/import/*.db
+local/dispecerat/*.db
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

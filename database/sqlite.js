@@ -1,7 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
-const { SQLITE } = require('../conf.json')
+const { SQLITE } = require('../conf.json');
+const { resolve } = require('path');
+const { table } = require('console');
 
 /**
  * Creare fisier sqlite in folderul dir (creat daca nu exista)
@@ -10,60 +12,62 @@ const { SQLITE } = require('../conf.json')
  * @param {Datele din index} values 
  * @param {Contine numele misiunii pentru a fiserul sqlite} filename 
  */
-const createDB = async (query, columns, values, filename) => {
+const createDB = async (query, filename) => {
     try {
-        let pathFolder = `../local/${SQLITE.DIRECTOR_EXPORT}`;
+        let pathFolder = "./local/" + SQLITE.DIRECTOR_EXPORT;
         if (!fs.existsSync(pathFolder)) {
             fs.mkdirSync(pathFolder);
         }
         const date = new Date();
         const [month, day, year] = [date.getMonth() + 1, date.getDate(), date.getFullYear()];
         const [hour, minutes, seconds] = [date.getHours(), date.getMinutes(), date.getSeconds()];
-
-        let name = pathFolder.concat('-', filename, '-', day.toLocaleString(undefined, { minimumIntegerDigits: 2 }), '-', month.toLocaleString(undefined, { minimumIntegerDigits: 2 }), '-', year, '-', hour.toLocaleString(undefined, { minimumIntegerDigits: 2 }), '.', minutes.toLocaleString(undefined, { minimumIntegerDigits: 2 }), '.', seconds.toLocaleString(undefined, { minimumIntegerDigits: 2 }), '.db')
+        let name = "Export" + '-' + filename + '-' + day.toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '-' + month.toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '-' + year + '-' + hour.toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '.' + minutes.toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '.' + seconds.toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '.db';
         let db = new sqlite3.Database(path.join(pathFolder, name), (err) => {
             if (err != null)
                 console.log(err);
         });
         return new Promise((resolve, reject) => {
-            db.serialize(function () {
-                db.run(query);
-
-                for (var i = 0; i < values.length; i++) {
-                    let value = ''
-                    for (const [k, v] of Object.entries(values[i])) {
-                        switch (typeof v) {
-                            case 'number':
-                                value = value + v + ',';
-                                break;
-                            case 'object':
-                                value = value + '\'' + JSON.stringify(v) + '\',';
-                                break;
-                            default:
-                                value = value + '\'' + v + '\',';
-                        }
+            db.serialize(async function () {
+                await Promise.all(query.split(';').filter(async (table) => {
+                    if (table.includes('CREATE')) {
+                        await dbRunQuery(db, table);
                     }
-                    value = value.substring(0, value.length - 1);
-                    stmt = db.prepare("INSERT INTO " + columns + " VALUES (" + value + ")").run();
-                    stmt.finalize();
-                    resolve(true)
-                }
+                }));
+                resolve(db)
             });
-        })
+        });
     } catch (error) {
-        console.error('Eroare creare tabel');
+        console.error(error);
+        throw new Error('Eroare creare tabel!');
     }
 }
 module.exports.createDB = createDB;
+
+const insertDB = async (db, values, format) => {
+    return new Promise((resolve, reject) => {
+        let query = values.map((elem) => {
+            return "INSERT INTO " + elem._index + insertFormatString(elem, format);
+        });
+
+        db.serialize(async function () {
+            await Promise.all(query.map(async (insert) => {
+                return await dbRunQuery(db, insert).catch(reject);
+            }));
+            resolve(true)
+        });
+
+    });
+}
+module.exports.insertDB = insertDB;
 
 /**
  * Citire si inserare in elasticsearch a datelor din fisiere.
  * @param {Calea din care se va citi fisierul de tip .db} path 
  */
- const importFromDB =  async (pathFile) =>{
-    let db = new sqlite3.Database(pathFile, (err)=>{
-        if(err != null){
-            console.log('Eroare citire fisier db: ' + err )
+const importFromDB = async (pathFile) => {
+    let db = new sqlite3.Database(pathFile, (err) => {
+        if (err != null) {
+            console.log('Eroare citire fisier db: ' + err)
             return 0;
         }
     });
@@ -74,41 +78,109 @@ module.exports.createDB = createDB;
             throw err;
         }
         rows.forEach((row) => {
-            insert = {...row}
+            insert = { ...row }
             delete insert['system_info']
             delete insert['_index']
-            
+
             let index_import = row._index;
             index_import = 'index_test_import' //pt dezvoltare
 
-            let data = {system_info:'false',...insert};
+            let data = { system_info: 'false', ...insert };
             if (typeof JSON.parse(row.system_info) != 'object') {
                 return;
             }
-            else
-            {
-                data = {system_info:JSON.parse(row.system_info),...insert};
+            else {
+                data = { system_info: JSON.parse(row.system_info), ...insert };
             }
 
-            compareBlacklist(data.system_info.imsi_str,data.system_info.imei_str).then((obj)=>{
+            compareBlacklist(data.system_info.imsi_str, data.system_info.imei_str).then((obj) => {
                 data.blacklistImsi = obj.criptonimIMSI;
                 data.blacklistImei = obj.criptonimIMEI;
                 data.blacklistPereche = obj.criptonimPERECHE;
 
-                getElastic.insertElastic(index_import,data).catch((err)=>{
+                getElastic.insertElastic(index_import, data).catch((err) => {
                     console.log('Eroare la inserare Elasticsearch!')
                 });
 
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log('Eroare la comparare!')
-            })    
+            })
         });
     });
     db.close();
     let tmp = pathFile.split('\\');
     let file = tmp[tmp.length - 1];
-    console.log(pathFile, '  ',path.join(__dirname, 'Imported-' + file))
+    console.log(pathFile, '  ', path.join(__dirname, 'Imported-' + file))
 
     return 1;
 }
 module.exports.importFromDB = importFromDB;
+
+const exportDB = async (properties, data, misiune) => {
+    let dbCreated;
+    try {
+        let tableFormat = createTable(properties);
+        dbCreated = await createDB(tableFormat, misiune);
+        let responseInsert = await insertDB(dbCreated, data, properties);
+        dbCreated.close();
+        return responseInsert;
+
+    } catch (error) {
+        (dbCreated ? dbCreated.close() : '');
+        throw new Error('Exportul nu a putut fi realizat');
+    }
+}
+module.exports.exportDB = exportDB;
+
+const insertFormatString = (object = {}, tableFormat) => {
+    let structureInsert = tableFormat.filter(el => el.index === object._index)[0]?.properties.reduce((prev, curr) => {
+        return prev = {
+            ...prev,
+            [Object.keys(curr)[0]]: Object.entries(curr)[0][1].type ?? 'text'
+        }
+    }, {});
+    let queryObj = Object.entries(object._source).reduce((prev, curr) => {
+        let value = curr[1]
+        if (curr[0] == "system_info") {
+            value = '\'' + JSON.stringify(curr[1]) + '\'';
+        }
+        if ((structureInsert[curr[0]] == 'text' || structureInsert[curr[0]] == 'date' || structureInsert[curr[0]] == 'geo_point') && curr[0] != "system_info") {
+            value = '"' + value + '"';
+        }
+        if (!curr[1]) value = '""';
+        return {
+            fields: [...prev.fields, curr[0]],
+            values: [...prev.values, value]
+        }
+    }, {
+        fields: [],
+        values: []
+    });
+    return "(" + queryObj.fields.join(',') + ') VALUES( ' + queryObj.values.join(',') + ')';
+}
+const getColumns = (fields = []) => {
+    return fields.reduce((prev, curr) => {
+        return prev + " " + Object.keys(curr)[0] + " " + (Object.entries(curr)[0][1].type ?? "text") + ", ";
+    }, '').slice(0, -2);
+}
+
+const createTable = (tablesArray = []) => {
+    let query = tablesArray.reduce((previousValue, currentValue) => {
+        return previousValue + 'CREATE TABLE ' + currentValue.index + ' (' + getColumns(currentValue.properties) + ' ); ';
+    }, '');
+    return query
+}
+
+
+const dbRunQuery = async (db, query) => {
+    return new Promise((resolve, reject) => {
+        db.run(query, (err) => {
+            if (err) {
+                console.log(err)
+                reject("Eroare executare query")
+            }
+
+            resolve(true);
+        })
+    })
+}

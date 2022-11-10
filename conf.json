@@ -8,7 +8,8 @@
         "INDEX_ALL_CATCH": "index_catch_*",
         "INDEX_MISIUNI": "index_misiuni_thor",
         "INDEX_SESIUNI": "index_sesiuni_thor",
-        "INDEX_BACKUP_CATCH": "index_backup_catch"
+        "INDEX_BACKUP_CATCH": "index_backup_catch",
+        "INDEX_BLACKLIST": "index_blacklist"
     },
     "SQLITE":{
         "DIRECTOR_EXPORT": "Export",

@@ -8,6 +8,7 @@ const exportMission = async (req, res, next) => {
     const mission = req.params.mission;
     let { user, role, token, destination } = req.body;
     try {
+        let messageAudit = `${user} exported mission: ${mission};`;
         let directorExport = SQLITE.DIRECTOR_EXPORT;
         if(destination == "dispecerat") directorExport = SQLITE.DIRECTOR_DISPECERAT;
 
@@ -43,6 +44,10 @@ const exportMission = async (req, res, next) => {
         let { body: mappingMisiune } = await getMappingIndex(ES.INDEX_MISIUNI);
         let indexesProperties = formatMapping({ ...mappingIndex, ...mappingBlacklist, ...mappingSesiuni, ...mappingMisiune })
         let exportResult = await exportDB(indexesProperties, [...exportData.hits.hits, ...exportBlacklist.hits.hits, ...exportMisiune.hits.hits, ...exportSesiuni.hits.hits ], mission, directorExport);
+        
+        if(exportResult)
+            insertLog(messageAudit, auditFile);
+        
         res.json({
             exportResult
         });

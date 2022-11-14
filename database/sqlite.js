@@ -2,8 +2,6 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 const { SQLITE } = require('../conf.json');
-const { resolve } = require('path');
-const { table } = require('console');
 
 /**
  * Creare fisier sqlite in folderul dir (creat daca nu exista)
@@ -173,7 +171,6 @@ const createTable = (tablesArray = []) => {
     return query
 }
 
-
 const dbRunQuery = async (db, query) => {
     return new Promise((resolve, reject) => {
         db.run(query, (err) => {
@@ -186,3 +183,51 @@ const dbRunQuery = async (db, query) => {
         })
     })
 }
+
+const openDb = (filename) => {
+    try {
+        let pathFolder = "./local/" + SQLITE.DIRECTOR_IMPORT;
+        if (!fs.existsSync(pathFolder)) {
+            throw new Error('Import director not found!');
+        }
+
+        let db = new sqlite3.Database(path.join(pathFolder, filename), (err) => {
+            if (err != null)
+                console.log(err);
+        });
+        return db;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Eroare creare tabel!');
+    }
+}
+
+const selectDb = async (db, query) => {
+    return new Promise((resolve, reject) => {
+        db.all(query, [], (err, rows) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(rows);
+        });
+    })
+}
+
+const importDb = async (filename) => {
+    try {
+        let db = openDb(filename);
+        let tables = await selectDb(db, "select name from sqlite_master where type='table'");
+        let dataFromTables = await Promise.all(tables.map(async (tabel)=>{
+            let data = await selectDb(db, "select * from " + tabel.name)
+            return{
+                name: tabel.name,
+                data
+            }
+        }));
+        return dataFromTables;
+    } catch (error) {
+        console.log(error)
+        throw new Error('Error import db!')
+    }
+}
+module.exports.importDb = importDb;

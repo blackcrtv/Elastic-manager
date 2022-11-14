@@ -1,5 +1,5 @@
 const { searchMultipleKeyElastic, getMappingIndex } = require("../../database/elastic");
-const { exportDB } = require("../../database/sqlite");
+const { exportDB, importDb } = require("../../database/sqlite");
 const { ES, errorLogFile, auditFile, SQLITE } = require('../../conf.json');
 const { insertLog } = require('../../Logs/Script/formatLogs');
 // let { indexesProperties } = require('../../dummy.json');
@@ -62,15 +62,18 @@ const exportMission = async (req, res, next) => {
 }
 
 const importMission = async (req, res, next) => {
-    const mission = req.params.mission;
     let { user, role, token } = req.body;
     try {
+        let importData = await importDb('Export-magnolia-14-11-2022-14.57.29.db');
+        let publishData = await publishElastic(importData);
+        console.log(importData);
         res.json({
+            importData
         });
     } catch (error) {
         insertLog(error, errorLogFile);
         res.json({
-            "error": "Error importMission: " + error.msg ?? error
+            "error": "Error importMission: " + error.msg ?? error ?? ""
         });
     }
 

@@ -1,31 +1,34 @@
 const { searchMultipleKeyElastic, getMappingIndex } = require("../../database/elastic");
 const { exportDB } = require("../../database/sqlite");
-const { ES, errorLogFile, auditFile } = require('../../conf.json');
+const { ES, errorLogFile, auditFile, SQLITE } = require('../../conf.json');
 const { insertLog } = require('../../Logs/Script/formatLogs');
 // let { indexesProperties } = require('../../dummy.json');
 
 const exportMission = async (req, res, next) => {
     const mission = req.params.mission;
-    let { user, role, token } = req.body;
+    let { user, role, token, destination } = req.body;
     try {
+        let directorExport = SQLITE.DIRECTOR_EXPORT;
+        if(destination == "dispecerat") directorExport = SQLITE.DIRECTOR_DISPECERAT;
+
         let queryCatch = [{
             method: "match",
-            key: "mission_id",
+            key: "mission_id.keyword",
             value: mission
         }];
         let queryBlacklist = [{
             method: "match",
-            key: "misiune",
+            key: "misiune.keyword",
             value: mission
         }];
         let querySesiuni = [{
             method: "match",
-            key: "misiune_apartinatoare",
+            key: "misiune_apartinatoare.keyword",
             value: mission
         }];
         let queryMisiuni = [{
             method: "match",
-            key: "misiune",
+            key: "misiune.keyword",
             value: mission
         }];
 
@@ -39,7 +42,7 @@ const exportMission = async (req, res, next) => {
         let { body: mappingSesiuni } = await getMappingIndex(ES.INDEX_SESIUNI);
         let { body: mappingMisiune } = await getMappingIndex(ES.INDEX_MISIUNI);
         let indexesProperties = formatMapping({ ...mappingIndex, ...mappingBlacklist, ...mappingSesiuni, ...mappingMisiune })
-        let exportResult = await exportDB(indexesProperties, { ...exportData.hits.hits, ...exportBlacklist.hits.hits, ...exportMisiune.hits.hits, ...exportSesiuni.hits.hits }, mission);
+        let exportResult = await exportDB(indexesProperties, [...exportData.hits.hits, ...exportBlacklist.hits.hits, ...exportMisiune.hits.hits, ...exportSesiuni.hits.hits ], mission, directorExport);
         res.json({
             exportResult
         });

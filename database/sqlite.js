@@ -12,9 +12,9 @@ const { table } = require('console');
  * @param {Datele din index} values 
  * @param {Contine numele misiunii pentru a fiserul sqlite} filename 
  */
-const createDB = async (query, filename) => {
+const createDB = async (query, filename, director) => {
     try {
-        let pathFolder = "./local/" + SQLITE.DIRECTOR_EXPORT;
+        let pathFolder = "./local/" + director;
         if (!fs.existsSync(pathFolder)) {
             fs.mkdirSync(pathFolder);
         }
@@ -44,6 +44,7 @@ const createDB = async (query, filename) => {
 module.exports.createDB = createDB;
 
 const insertDB = async (db, values, format) => {
+
     return new Promise((resolve, reject) => {
         let query = values.map((elem) => {
             return "INSERT INTO " + elem._index + insertFormatString(elem, format);
@@ -116,17 +117,18 @@ const importFromDB = async (pathFile) => {
 }
 module.exports.importFromDB = importFromDB;
 
-const exportDB = async (properties, data, misiune) => {
+const exportDB = async (properties, data, misiune, director) => {
     let dbCreated;
     try {
         let tableFormat = createTable(properties);
-        dbCreated = await createDB(tableFormat, misiune);
+        dbCreated = await createDB(tableFormat, misiune, director);
         let responseInsert = await insertDB(dbCreated, data, properties);
         dbCreated.close();
         return responseInsert;
 
     } catch (error) {
         (dbCreated ? dbCreated.close() : '');
+        console.log(error)
         throw new Error('Exportul nu a putut fi realizat');
     }
 }

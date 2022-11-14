@@ -22,5 +22,6 @@ DELETE: http://localhost:5003/api/delete/delete-session/<postman3>/<test3> --del
 
 POST: http://localhost:5003/api/mission-transfer/export-mission/<postman3> --export a mission
     BODY:{
-        "user": "lucian"
+        "user": "lucian",
+        "destination": "dispecerat" -- pt dispecerat se va specifica in body, pentru export default se poate renunta la campul destination.
     }

@@ -9,7 +9,8 @@
         "INDEX_MISIUNI": "index_misiuni_thor",
         "INDEX_SESIUNI": "index_sesiuni_thor",
         "INDEX_BACKUP_CATCH": "index_backup_catch",
-        "INDEX_BLACKLIST": "index_blacklist"
+        "INDEX_BLACKLIST": "index_blacklist",
+        "INDEX_STATUS_EXPORT": "index_export_misiuni"
     },
     "SQLITE":{
         "DIRECTOR_EXPORT": "Export",

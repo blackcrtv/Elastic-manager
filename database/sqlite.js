@@ -224,6 +224,7 @@ const importDb = async (filename) => {
                 data
             }
         }));
+        db.close();
         return dataFromTables;
     } catch (error) {
         console.log(error)

@@ -1,6 +1,6 @@
 {
     "ES": {
-        "IP": "http://172.17.120.119:9200",
+        "IP": "localhost",
         "INDEX_GSM": "index_scan_beta_2g",
         "INDEX_UMTS": "index_scan_beta_3g",
         "INDEX_LTE": "index_scan_beta_4g",

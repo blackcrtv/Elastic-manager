@@ -2,6 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 const { SQLITE } = require('../conf.json');
+const { resolve } = require('path');
 
 /**
  * Creare fisier sqlite in folderul dir (creat daca nu exista)
@@ -59,62 +60,6 @@ const insertDB = async (db, values, format) => {
 }
 module.exports.insertDB = insertDB;
 
-/**
- * Citire si inserare in elasticsearch a datelor din fisiere.
- * @param {Calea din care se va citi fisierul de tip .db} path 
- */
-const importFromDB = async (pathFile) => {
-    let db = new sqlite3.Database(pathFile, (err) => {
-        if (err != null) {
-            console.log('Eroare citire fisier db: ' + err)
-            return 0;
-        }
-    });
-    let sql = `SELECT * FROM 'THOR_EXPORT'`;
-    let insert = {}
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            throw err;
-        }
-        rows.forEach((row) => {
-            insert = { ...row }
-            delete insert['system_info']
-            delete insert['_index']
-
-            let index_import = row._index;
-            index_import = 'index_test_import' //pt dezvoltare
-
-            let data = { system_info: 'false', ...insert };
-            if (typeof JSON.parse(row.system_info) != 'object') {
-                return;
-            }
-            else {
-                data = { system_info: JSON.parse(row.system_info), ...insert };
-            }
-
-            compareBlacklist(data.system_info.imsi_str, data.system_info.imei_str).then((obj) => {
-                data.blacklistImsi = obj.criptonimIMSI;
-                data.blacklistImei = obj.criptonimIMEI;
-                data.blacklistPereche = obj.criptonimPERECHE;
-
-                getElastic.insertElastic(index_import, data).catch((err) => {
-                    console.log('Eroare la inserare Elasticsearch!')
-                });
-
-            }).catch((err) => {
-                console.log('Eroare la comparare!')
-            })
-        });
-    });
-    db.close();
-    let tmp = pathFile.split('\\');
-    let file = tmp[tmp.length - 1];
-    console.log(pathFile, '  ', path.join(__dirname, 'Imported-' + file))
-
-    return 1;
-}
-module.exports.importFromDB = importFromDB;
-
 const exportDB = async (properties, data, misiune, director) => {
     let dbCreated;
     try {
@@ -140,8 +85,10 @@ const insertFormatString = (object = {}, tableFormat) => {
         }
     }, {});
     let queryObj = Object.entries(object._source).reduce((prev, curr) => {
-        let value = curr[1]
-        if (curr[0] == "system_info") {
+        let value = curr[1];
+        if(value === null || value.length === 0) return {...prev}
+        if (curr[0] == "system_info" || curr[0] == "schimbariSIM") {
+            delete curr[1].DEBUG_BYTES_BASE64;
             value = '\'' + JSON.stringify(curr[1]) + '\'';
         }
         if ((structureInsert[curr[0]] == 'text' || structureInsert[curr[0]] == 'date' || structureInsert[curr[0]] == 'geo_point') && curr[0] != "system_info") {
@@ -224,7 +171,11 @@ const importDb = async (filename) => {
                 data
             }
         }));
-        db.close();
+        await new Promise((resolve,reject)=>{
+            db.close((err)=>{   
+                resolve(err)
+            });
+        }) 
         return dataFromTables;
     } catch (error) {
         console.log(error)

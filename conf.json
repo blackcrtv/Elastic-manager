@@ -1,11 +1,11 @@
 {
     "ES": {
-        "IP": "localhost",
+        "IP": "http://localhost:9200",
         "INDEX_GSM": "index_scan_beta_2g",
         "INDEX_UMTS": "index_scan_beta_3g",
         "INDEX_LTE": "index_scan_beta_4g",
         "INDEX_ALL_SCAN": "index_scan_beta*",
-        "INDEX_ALL_CATCH": "index_catch_*",
+        "INDEX_ALL_CATCH": "index_catch_*g",
         "INDEX_MISIUNI": "index_misiuni_thor",
         "INDEX_SESIUNI": "index_sesiuni_thor",
         "INDEX_BACKUP_CATCH": "index_backup_catch",

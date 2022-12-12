@@ -35,7 +35,7 @@ const exportMission = async (req, res, next) => {
             value: mission
         }];
 
-        let raspEs = await updateStatusEs("Started", "", mission);
+        let raspEs = await updateStatusEs("Started", "EXPORT", "", mission);
         if (raspEs.statusCode >= 400) throw new Error('Eroare creare doc!');
         idES = raspEs.body._id;
 
@@ -50,17 +50,18 @@ const exportMission = async (req, res, next) => {
         let { body: mappingSesiuni } = await getMappingIndex(ES.INDEX_SESIUNI);
         let { body: mappingMisiune } = await getMappingIndex(ES.INDEX_MISIUNI);
         let indexesProperties = formatMapping({ ...mappingIndex, ...mappingBlacklist, ...mappingSesiuni, ...mappingMisiune })
+
         let exportResult = await exportDB(indexesProperties, [...exportData.hits.hits, ...exportBlacklist.hits.hits, ...exportMisiune.hits.hits, ...exportSesiuni.hits.hits], mission, directorExport);
 
         if (exportResult) { }
         insertLog(messageAudit, auditFile);
 
-        if (exportData.hits.hits.length) {
-            await updateStatusEs("Empty", idES);
-        } else await updateStatusEs("Finished", idES);
+        if (exportData.hits.hits.length === 0) {
+            await updateStatusEs("Empty", "EXPORT", idES, mission);
+        } else await updateStatusEs("Finished", "EXPORT", idES, mission);
 
         res.json({
-            exportResult
+            indexesProperties
         });
     } catch (error) {
         console.error(error)
@@ -80,18 +81,18 @@ const importMission = async (req, res, next) => {
         filesList = filesList.filter(file => {
             if (file.includes("Export")) return file;
         });
-        let idES, missionId;
+        let idES, missionId, importData;
         for (let i = 0; i < filesList.length; i++) {
             missionId = filesList[i].split('-')[1];
-            let raspEs = await updateStatusEs("Started", "", missionId);
+            let raspEs = await updateStatusEs("Started", "IMPORT", missionId);
             if (raspEs.statusCode >= 400) throw new Error('Eroare creare doc!');
             idES = raspEs.body._id;
 
-            let importData = await importDb(filesList[i]);
+            importData = await importDb(filesList[i]);
             let publishData = await publishElastic(importData);
 
-            fs.renameSync(path.join(importDirectory, filesList[i]), path.join(importDirectory, filesList[i].replace("Export", "Imported")));
-            await updateStatusEs("Finished", idES, missionId);
+            // fs.renameSync(path.join(importDirectory, filesList[i]), path.join(importDirectory, filesList[i].replace("Export", "Imported")));
+            await updateStatusEs("Finished", "IMPORT", idES, missionId);
         }
         res.json({
             filesList,
@@ -100,7 +101,7 @@ const importMission = async (req, res, next) => {
     } catch (error) {
         console.log(error)
         insertLog(error, errorLogFile);
-        await updateStatusEs("Error", idES, missionId);
+        await updateStatusEs("Error","IMPORT", idES, missionId);
         res.json({
             "error": "Error importMission: " + error.msg ?? error ?? ""
         });

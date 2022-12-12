@@ -1,6 +1,7 @@
 const { Client: Client7 } = require('es7')
 const { ES } = require('../conf.json')
 
+const arrayFields = ["imsiLocatie","imeiLocatie", "perecheImeiImsiLocatie", "schimbariSIM"];
 
 /**
  *  Utilizat pentru import in Elasticsearch
@@ -31,7 +32,7 @@ const insertBulkElastic = async (insertArray = []) => {
     try {
         const client = new Client7({ node: ES.IP })
         let bulkData = [];
-
+        
         for (let i = 0; i < insertArray.length; i++) {
             for (let j = 0; j < insertArray[i].data.length; j++) {
                 // bulkData.push({ index: { _index: "index_test_import" } });
@@ -108,7 +109,7 @@ module.exports.insertElasticWithId = insertElasticWithId;
  * @param status actiune(momentan doar "Finished, Empty, Running") status 
  */
 
-const updateStatusEs = async (status, id = "", option = "") => {
+const updateStatusEs = async (status, action, id = "", option = "") => {
     let ip_local = ES.IP.replace('http://', "");
 
     const date = new Date();
@@ -119,7 +120,9 @@ const updateStatusEs = async (status, id = "", option = "") => {
 
     let body = {
         status: status,
-        ip: ip_local
+        ip: ip_local,
+        actiune: action,
+        misiune: option
     }
 
     try {
@@ -145,10 +148,8 @@ const updateStatusEs = async (status, id = "", option = "") => {
             case 'Started':
                 body = {
                     ...body,
-                    date_start: dateNow,
-                    misiune: option
+                    date_start: dateNow
                 }
-                console.log(body)
                 return await insertElastic(ES.INDEX_STATUS_EXPORT, body);
             default:
                 body = {
@@ -369,6 +370,7 @@ const filterNullKeys = (data = []) => {
                         if (elem[key] === null) delete elem[key];
                         if (key === "coordonate" && elem[key] === "") delete elem[key];
                         if (data[i].name?.includes("_catch_") && key === "system_info") elem[key] = JSON.parse(elem[key]);
+                        if (data[i].name?.includes("_catch_") && arrayFields.includes(key)) elem[key] = elem[key].split(",");
                     });
                     return elem;
                 })

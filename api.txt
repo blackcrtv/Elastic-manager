@@ -26,4 +26,9 @@ POST: http://localhost:5003/api/mission-transfer/export-mission/<postman3> --exp
         "destination": "dispecerat" -- pt dispecerat se va specifica in body, pentru export default se poate renunta la campul destination.
     }
 
+POST: http://localhost:5003/api/mission-transfer/import-mission --import all db files from folder import
+    BODY:{
+
+    }
+
 ---de verificat daca in Logs exista folderul Audit

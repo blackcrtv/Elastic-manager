@@ -91,7 +91,7 @@ const importMission = async (req, res, next) => {
             importData = await importDb(filesList[i]);
             let publishData = await publishElastic(importData);
 
-            // fs.renameSync(path.join(importDirectory, filesList[i]), path.join(importDirectory, filesList[i].replace("Export", "Imported")));
+            fs.renameSync(path.join(importDirectory, filesList[i]), path.join(importDirectory, filesList[i].replace("Export", "Imported")));
             await updateStatusEs("Finished", "IMPORT", idES, missionId);
         }
         res.json({

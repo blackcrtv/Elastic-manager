@@ -103,6 +103,28 @@ const insertElasticWithId = async (_index, _data, _id) => {
 }
 module.exports.insertElasticWithId = insertElasticWithId;
 
+const updateElasticWithId = async (_index, script, _id) => {
+    try {
+        const client = new Client7({ node: ES.IP })
+
+        return await client.update({
+            id: _id,
+            index: _index,
+            body: {
+                script
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        return {
+            err: true,
+            errMsg: error,
+            data: script
+        };
+    }
+
+}
+
 /**
  * Update in elasticsearch la statusul procesului
  * @param id index elasticsearch 
@@ -125,24 +147,28 @@ const updateStatusEs = async (status, action, id = "", option = "") => {
         misiune: option
     }
 
+    let script = {
+        lang: "painless"
+    }
+
     try {
         switch (status) {
             case 'Running':
-                body = {
-                    ...body,
-                    date_start: dateNow
+                script = {
+                    ...script,
+                    source: "ctx._source.date_start = '" + dateNow + "'; ctx._source.status = '" + status + "'"
                 }
                 break;
             case 'Finished':
-                body = {
-                    ...body,
-                    date_stop: dateNow
+                script = {
+                    ...script,
+                    source: "ctx._source.date_stop = '" + dateNow + "'; ctx._source.status = '" + status + "'"
                 }
                 break;
             case 'Empty':
-                body = {
-                    ...body,
-                    date_stop: dateNow
+                script = {
+                    ...script,
+                   source: "ctx._source.date_stop = '" + dateNow + "'; ctx._source.status = '" + status + "'"
                 }
                 break;
             case 'Started':
@@ -152,13 +178,14 @@ const updateStatusEs = async (status, action, id = "", option = "") => {
                 }
                 return await insertElastic(ES.INDEX_STATUS_EXPORT, body);
             default:
-                body = {
-                    ...body,
-                    date_stop: dateNow
+                script = {
+                    ...script,
+                    source: "ctx._source.date_stop = '" + dateNow + "'; ctx._source.status = '" + status + "'"
                 }
                 break;
         }
-        return await insertElasticWithId(ES.INDEX_STATUS_EXPORT, body, id);
+
+        return await updateElasticWithId(ES.INDEX_STATUS_EXPORT, script, id);
 
     } catch (error) {
         console.log(error);
@@ -260,7 +287,7 @@ const searchMultipleKeyElastic = async (keyValArr = [], index_dest, option = 'se
                         ]
                     }
                 },
-                "size": 10000
+                "size": 100000
             }
 
         switch (option) {

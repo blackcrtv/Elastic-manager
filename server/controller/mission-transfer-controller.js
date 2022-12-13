@@ -9,6 +9,7 @@ const path = require('path');
 const exportMission = async (req, res, next) => {
     const mission = req.params.mission;
     let { user, role, token, destination } = req.body;
+    let idES;
     try {
         let messageAudit = `${user} exported mission: ${mission};`;
         let directorExport = SQLITE.DIRECTOR_EXPORT;
@@ -66,6 +67,7 @@ const exportMission = async (req, res, next) => {
     } catch (error) {
         console.error(error)
         insertLog(error, errorLogFile);
+        await updateStatusEs("Error", "EXPORT", idES, mission).catch();
         res.json({
             "error": "Error exportMission: " + error
         });
@@ -75,13 +77,14 @@ const exportMission = async (req, res, next) => {
 
 const importMission = async (req, res, next) => {
     let { user, role, token } = req.body;
+    let idES;
     try {
         let importDirectory = path.join(__dirname, "/../../local/", SQLITE.DIRECTOR_IMPORT);
         let filesList = fs.readdirSync(importDirectory);
         filesList = filesList.filter(file => {
             if (file.includes("Export")) return file;
         });
-        let idES, missionId, importData;
+        let missionId, importData;
         for (let i = 0; i < filesList.length; i++) {
             missionId = filesList[i].split('-')[1];
             let raspEs = await updateStatusEs("Started", "IMPORT", missionId);
@@ -101,7 +104,7 @@ const importMission = async (req, res, next) => {
     } catch (error) {
         console.log(error)
         insertLog(error, errorLogFile);
-        await updateStatusEs("Error","IMPORT", idES, missionId);
+        await updateStatusEs("Error","IMPORT", idES, missionId).catch();
         res.json({
             "error": "Error importMission: " + error.msg ?? error ?? ""
         });

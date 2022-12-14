@@ -9,7 +9,9 @@ lerna-debug.log*
 local/export/*.db
 local/import/*.db
 local/dispecerat/*.db
-daemon/*
+
+#Service built
+daemon/
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
